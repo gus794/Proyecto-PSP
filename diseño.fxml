@@ -6,22 +6,33 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="844.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ListView layoutX="532.0" layoutY="104.0" prefHeight="305.0" prefWidth="286.0" />
-      <Button layoutX="350.0" layoutY="463.0" mnemonicParsing="false" text="Confirmar asignaciones" />
-      <Button layoutX="365.0" layoutY="104.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Crear tarea" />
-      <Button layoutX="365.0" layoutY="142.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Crear empleado" />
-      <Button layoutX="365.0" layoutY="257.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Asignar empleado" />
+      <Button layoutX="356.0" layoutY="369.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Confirm assignments" />
+      <Button layoutX="25.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Create" />
+      <Button layoutX="355.0" layoutY="196.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Assign employee" />
       <ListView layoutX="25.0" layoutY="104.0" prefHeight="305.0" prefWidth="286.0" />
-      <Button layoutX="355.0" layoutY="373.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Ver tareas finalizadas" />
-      <Label layoutX="294.0" layoutY="14.0" text="Área de gerente">
+      <Button layoutX="355.0" layoutY="257.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="View completed task" />
+      <Label layoutX="312.0" layoutY="14.0" text="Manager area">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <Button layoutX="365.0" layoutY="182.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Modificar empleado" />
-      <Button layoutX="365.0" layoutY="221.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="114.0" text="Borrar empleado" />
+      <Button layoutX="239.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Delete" />
+      <Button layoutX="132.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Modify" />
+      <Button layoutX="532.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Create" />
+      <Button layoutX="746.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Delete" />
+      <Button layoutX="639.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" text="Modify" />
+      <Label layoutX="632.0" layoutY="68.0" text="Employees">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="146.0" layoutY="68.0" text="Tasks">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
