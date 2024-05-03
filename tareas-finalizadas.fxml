@@ -6,13 +6,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="390.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="390.0" style="-fx-background-color: #4E4D4D;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ListView layoutX="34.0" layoutY="102.0" prefHeight="234.0" prefWidth="318.0" />
-      <Button layoutX="143.0" layoutY="356.0" mnemonicParsing="false" text="Generate report" />
-      <Label layoutX="138.0" layoutY="38.0" text="Finished tasks">
+      <Button layoutX="143.0" layoutY="363.0" mnemonicParsing="false" style="-fx-background-radius: 15px;" text="Generate report" />
+      <ListView fx:id="lvEmpleados" layoutX="52.0" layoutY="76.0" prefHeight="265.0" prefWidth="286.0" style="-fx-background-radius: 0px 0px 10px 10px;" />
+      <Label layoutX="52.0" layoutY="30.0" prefHeight="43.0" prefWidth="286.0" style="-fx-padding: 5Px 10px 5px 10px; -fx-background-color: white; -fx-background-radius: 10Px 10px 0px 0px; -fx-alignment: center;" text="Finished tasks">
          <font>
-            <Font size="18.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
    </children>
