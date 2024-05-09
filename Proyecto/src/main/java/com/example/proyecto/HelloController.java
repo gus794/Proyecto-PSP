@@ -1,13 +1,18 @@
 package com.example.proyecto;
 
+import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import model.Task;
+import model.TaskListResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utils.MessageUtils;
+import utils.ServiceUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,7 +23,30 @@ public class HelloController implements Initializable {
     private ListView<String> listEmployees;
 
     @FXML
-    private ListView<String> listTasks;
+    private ListView<Task> listTasks;
+    Gson gson = new Gson();
+    private void getTasks() {
+        String url = ServiceUtils.SERVER + "/api/trabajos";
+
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenApply(json -> {
+                    System.out.println(url);
+                    System.out.println("Received JSON response: " + json);
+                    return gson.fromJson(json, TaskListResponse.class);
+                })                .thenAccept(response -> {
+                    System.out.println("response: "+response);
+                    if (!response.isError()) {
+                        System.out.println("ñoadbc"+response.getTasks());
+                        Platform.runLater(()->listTasks.getItems().setAll(response.getTasks()));
+                    } else {
+                        MessageUtils.showError("Error", response.getErrorMessage());
+                    }
+                })
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to fetch contacts");
+                    return null;
+                });
+    }
 
     private ObservableList<String> generateEmployees(){
         JSONObject employee1 = new JSONObject();
@@ -111,6 +139,6 @@ public class HelloController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         listEmployees.setItems(generateEmployees());
-        listTasks.setItems(generateTasks());
+        getTasks();
     }
 }
