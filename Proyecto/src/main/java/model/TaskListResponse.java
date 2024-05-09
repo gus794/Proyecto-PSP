@@ -2,10 +2,14 @@ package model;
 
 import java.util.List;
 
-public class TaskListResponse extends BaseResponse{
-    List<Task> result;
+public class TaskListResponse extends BaseResponse {
+    private List<Task> tasks;
 
     public List<Task> getTasks() {
-        return result;
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

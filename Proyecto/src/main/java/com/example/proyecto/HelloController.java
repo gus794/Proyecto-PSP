@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import model.Task;
 import model.TaskListResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import utils.MessageUtils;
 import utils.ServiceUtils;
@@ -29,17 +30,12 @@ public class HelloController implements Initializable {
         String url = ServiceUtils.SERVER + "/api/trabajos";
 
         ServiceUtils.getResponseAsync(url, null, "GET")
-                .thenApply(json -> {
-                    System.out.println(url);
-                    System.out.println("Received JSON response: " + json);
-                    return gson.fromJson(json, TaskListResponse.class);
-                })                .thenAccept(response -> {
-                    System.out.println("response: "+response);
-                    if (!response.isError()) {
-                        System.out.println("ñoadbc"+response.getTasks());
-                        Platform.runLater(()->listTasks.getItems().setAll(response.getTasks()));
+                .thenAccept(json -> {
+                    ObservableList<Task> tasks = parseTasks(json);
+                    if (tasks != null) {
+                        Platform.runLater(() -> listTasks.setItems(tasks));
                     } else {
-                        MessageUtils.showError("Error", response.getErrorMessage());
+                        MessageUtils.showError("Error", "Failed to parse tasks");
                     }
                 })
                 .exceptionally(ex -> {
@@ -47,6 +43,30 @@ public class HelloController implements Initializable {
                     return null;
                 });
     }
+
+    private ObservableList<Task> parseTasks(String json) {
+        ObservableList<Task> tasks = FXCollections.observableArrayList();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Task task = new Task(
+                        jsonObject.getString("categoria"),
+                        jsonObject.getString("descripcion"),
+                        jsonObject.getString("fechaInicio"),
+                        jsonObject.getString("fechaFin"),
+                        jsonObject.getDouble("tiempo"),
+                        jsonObject.getInt("prioridad")
+                );
+                tasks.add(task);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return tasks;
+    }
+
 
     private ObservableList<String> generateEmployees(){
         JSONObject employee1 = new JSONObject();
@@ -87,50 +107,6 @@ public class HelloController implements Initializable {
             String json = "Name: " + employee.getString("name") +
                     "   DNI: " + employee.getString("dni")+
                     "   Email: " + employee.getString("email");
-            listJSON.add(json);
-        }
-        return listJSON;
-    }
-
-    private ObservableList<String> generateTasks(){
-        JSONObject task1 = new JSONObject();
-        task1.put("cod_task",1);
-        task1.put("category","Empty");
-        task1.put("description","Description of task 1");
-        task1.put("dateStart","03/05/2024");
-        task1.put("dateEnd","10/05/2024");
-        task1.put("time","5 hours");
-        task1.put("priority","High");
-
-        JSONObject task2 = new JSONObject();
-        task2.put("cod_task",2);
-        task2.put("category","Cleaning");
-        task2.put("description","Description of task 2");
-        task2.put("dateStart","05/05/2024");
-        task2.put("dateEnd","12/05/2024");
-        task2.put("time","3 hours");
-        task2.put("priority","Medium");
-
-        JSONObject task3 = new JSONObject();
-        task3.put("cod_task",3);
-        task3.put("category","Empty");
-        task3.put("description","Description of task 3");
-        task3.put("dateStart","07/05/2024");
-        task3.put("dateEnd","14/05/2024");
-        task3.put("time","2 hours");
-        task3.put("priority","Low");
-
-        JSONArray tasks = new JSONArray();
-        tasks.put(task1);
-        tasks.put(task2);
-        tasks.put(task3);
-
-        ObservableList<String> listJSON = FXCollections.observableArrayList();
-        for (int i = 0; i < tasks.length(); i++) {
-            JSONObject task = tasks.getJSONObject(i);
-            String json = "Category: " + task.getString("category") +
-                    "   Date Start: " + task.getString("dateStart") +
-                    "   Date End: " + task.getString("dateEnd");
             listJSON.add(json);
         }
         return listJSON;

@@ -5,18 +5,18 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class Task {
-    @SerializedName("codTrabajo")
-    private String codTrabajo;
-    String categoria;
-    String descripcion;
-    Date fechaInicio;
-    Date fechaFin;
-    int tiempo;
-    int prioridad;
-    Employee trabajador;
+    @SerializedName("codTrabajo") // Corregido aquí
+    private String codTrabajo; // Corregido aquí
+    private String categoria; // Corregido aquí
+    private String descripcion; // Corregido aquí
+    private String fechaInicio; // Corregido aquí
+    private String fechaFin; // Corregido aquí
+    private double tiempo; // Corregido aquí
+    private int prioridad; // Corregido aquí
+    private Trabajador trabajador;
 
 
-    public Task(String category, String description, Date start, Date end, int time, int priority) {
+    public Task(String category, String description, String start, String end, double time, int priority) {
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
@@ -42,27 +42,27 @@ public class Task {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaInicio() {
+    public String getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(String fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Date getFechaFin() {
+    public String getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
     }
 
-    public int getTiempo() {
+    public double getTiempo() {
         return tiempo;
     }
 
-    public void setTiempo(int tiempo) {
+    public void setTiempo(double tiempo) {
         this.tiempo = tiempo;
     }
 
@@ -72,6 +72,22 @@ public class Task {
 
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
+    }
+
+    public String getCodTrabajo() {
+        return codTrabajo;
+    }
+
+    public void setCodTrabajo(String codTrabajo) {
+        this.codTrabajo = codTrabajo;
+    }
+
+    public Trabajador getTrabajador() {
+        return trabajador;
+    }
+
+    public void setTrabajador(Trabajador trabajador) {
+        this.trabajador = trabajador;
     }
 
     @Override
