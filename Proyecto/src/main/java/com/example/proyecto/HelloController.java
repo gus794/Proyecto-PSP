@@ -81,7 +81,8 @@ public class HelloController implements Initializable {
                         jsonObject.getString("categoria"),
                         jsonObject.getString("descripcion"),
                         jsonObject.getString("fechaInicio"),
-                        jsonObject.getInt("prioridad")
+                        jsonObject.getInt("prioridad"),
+                        null
                 );
                 tasks.add(task);
             }
@@ -123,6 +124,7 @@ public class HelloController implements Initializable {
             Parent root = loader.load();
             TaskFormController tfcontroller = loader.getController();
             tfcontroller.setMainController(this);
+            tfcontroller.fillOptions();
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
@@ -134,6 +136,9 @@ public class HelloController implements Initializable {
     public ListView<Task> getListTasks() {
         return this.listTasks;
     }
+    public ListView<Trabajador> getListEmployees() {
+        return this.listEmployees;
+    }
 
     public void assignEmployee() {
         Task selectedTask = listTasks.getSelectionModel().getSelectedItem();
@@ -142,6 +147,7 @@ public class HelloController implements Initializable {
         if (selectedTask != null && selectedEmployee != null) {
             selectedTask.setTrabajador(selectedEmployee);
             listTasks.setItems(null);
+            tasks.remove(selectedTask);
             listTasks.setItems(tasks);
         }
     }

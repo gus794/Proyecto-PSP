@@ -29,7 +29,7 @@
         <items>
         </items>
       </SplitMenuButton>
-      <SplitMenuButton fx:id="menuEmployee" layoutX="131.0" layoutY="197.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="176.0" text="Antonio">
+      <SplitMenuButton fx:id="menuEmployee" layoutX="131.0" layoutY="197.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="176.0" text="No asignar">
          <items>
             <MenuItem mnemonicParsing="false" text="Action 1" />
             <MenuItem mnemonicParsing="false" text="Action 2" />

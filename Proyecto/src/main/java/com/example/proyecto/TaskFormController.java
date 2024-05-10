@@ -9,12 +9,10 @@ import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import model.Task;
+import model.Trabajador;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class TaskFormController implements Initializable {
@@ -44,6 +42,12 @@ public class TaskFormController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txtPriority.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, change ->
+                (change.getControlNewText().matches("\\d*")) ? change : null));
+
+    }
+
+    public void fillOptions () {
         menuCategory.getItems().clear();
         for (String category : CATEGORIES) {
             MenuItem menuItem = new MenuItem(category);
@@ -53,9 +57,15 @@ public class TaskFormController implements Initializable {
             menuCategory.getItems().add(menuItem);
         }
 
-        txtPriority.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, change ->
-                (change.getControlNewText().matches("\\d*")) ? change : null));
-
+        menuEmployee.getItems().clear();
+        menuEmployee.getItems().add(new MenuItem("No asignar"));
+        for (Trabajador employee : this.mainController.getListEmployees().getItems()) {
+            MenuItem menuItem = new MenuItem(employee.getNombre());
+            menuItem.setOnAction(event -> {
+                menuEmployee.setText(employee.getNombre());
+            });
+            menuEmployee.getItems().add(menuItem);
+        }
     }
 
     @FXML
@@ -63,10 +73,20 @@ public class TaskFormController implements Initializable {
         String category = menuCategory.getText();
         String description = txtDescription.getText();
         String priority = txtPriority.getText();
+        Trabajador employee = null;
+        if (!Objects.equals(menuEmployee.getText(), "No asignar")) {
+            for (Trabajador e : this.mainController.getListEmployees().getItems()) {
+                if (Objects.equals(e.getNombre(), menuEmployee.getText())) {
+                    employee = e;
+                }
+            }
+        }
 
-        Task newTask = new Task(category, description, new Date().toString(), Integer.parseInt(priority));
+        Task newTask = new Task(category, description, new Date().toString(), Integer.parseInt(priority), employee);
 
-        this.mainController.getListTasks().getItems().add(newTask);
+        if (employee == null) {
+            this.mainController.getListTasks().getItems().add(newTask);
+        }
 
         Stage stage = (Stage) menuCategory.getScene().getWindow();
         stage.close();

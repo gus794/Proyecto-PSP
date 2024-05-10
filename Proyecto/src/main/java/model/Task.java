@@ -16,12 +16,12 @@ public class Task {
     private Trabajador trabajador;
 
 
-    public Task(String category, String description, String start, int priority) {
+    public Task(String category, String description, String start, int priority, Trabajador trbajador) {
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
         this.prioridad = priority;
-        this.trabajador = null;
+        this.trabajador = trbajador;
     }
 
     public String getCategoria() {
