@@ -16,12 +16,10 @@ public class Task {
     private Trabajador trabajador;
 
 
-    public Task(String category, String description, String start, String end, double time, int priority) {
+    public Task(String category, String description, String start, int priority) {
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
-        this.fechaFin = end;
-        this.tiempo = time;
         this.prioridad = priority;
         this.trabajador = null;
     }
@@ -93,13 +91,10 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "cod_task='" + codTrabajo + '\'' +
                 ", category='" + categoria + '\'' +
                 ", description='" + descripcion + '\'' +
                 ", start=" + fechaInicio +
-                ", end=" + fechaFin +
-                ", time='" + tiempo + '\'' +
                 ", priority=" + prioridad +
-                '}';
+                ", employee=" + trabajador;
     }
 }
