@@ -1,27 +1,31 @@
 package model;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
-
-public class Task {
-    @SerializedName("codTrabajo") // Corregido aquí
-    private String codTrabajo; // Corregido aquí
-    private String categoria; // Corregido aquí
-    private String descripcion; // Corregido aquí
-    private String fechaInicio; // Corregido aquí
-    private String fechaFin; // Corregido aquí
-    private double tiempo; // Corregido aquí
-    private int prioridad; // Corregido aquí
+public class Task{
+    private int codTrabajo;
+    private String categoria;
+    private String descripcion;
+    private String fechaInicio;
+    private String fechaFin;
+    private double tiempo;
+    private int prioridad;
     private Trabajador trabajador;
 
 
-    public Task(String category, String description, String start, int priority, Trabajador trbajador) {
+    public Task(String category, String description, String start, int priority, Trabajador trabajador) {
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
         this.prioridad = priority;
-        this.trabajador = trbajador;
+        this.trabajador = trabajador;
+    }
+
+    public Task(int codTrabajo, String category, String description, String start, int priority, Trabajador trabajador) {
+        this.codTrabajo = codTrabajo;
+        this.categoria = category;
+        this.descripcion = description;
+        this.fechaInicio = start;
+        this.prioridad = priority;
+        this.trabajador = trabajador;
     }
 
     public String getCategoria() {
@@ -72,11 +76,11 @@ public class Task {
         this.prioridad = prioridad;
     }
 
-    public String getCodTrabajo() {
+    public int getCodTrabajo() {
         return codTrabajo;
     }
 
-    public void setCodTrabajo(String codTrabajo) {
+    public void setCodTrabajo(int codTrabajo) {
         this.codTrabajo = codTrabajo;
     }
 
@@ -92,6 +96,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 ", category='" + categoria + '\'' +
+                ", cod='" + codTrabajo + '\'' +
                 ", description='" + descripcion + '\'' +
                 ", start=" + fechaInicio +
                 ", priority=" + prioridad +

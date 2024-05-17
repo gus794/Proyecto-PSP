@@ -6,5 +6,7 @@ module com.example.proyecto {
 
 
     opens com.example.proyecto to javafx.fxml;
+    opens model to com.google.gson;
+
     exports com.example.proyecto;
 }

@@ -22,6 +22,15 @@ public class Trabajador {
         this.email = email;
     }
 
+    public Trabajador(String dni, String nombre, String apellidos, String especialidad, String contraseña, String email) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.especialidad = especialidad;
+        this.contraseña = contraseña;
+        this.email = email;
+    }
+
     public int getIdTrabajador() {
         return idTrabajador;
     }

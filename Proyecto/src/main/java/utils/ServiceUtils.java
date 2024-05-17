@@ -72,7 +72,7 @@ public class ServiceUtils
 
             String charset = getCharset(conn.getHeaderField("Content-Type"));
 
-            // if (charset != null) {
+            if (charset != null) {
                 InputStream input = conn.getInputStream();
                 if ("gzip".equals(conn.getContentEncoding())) {
                     input = new GZIPInputStream(input);
@@ -85,7 +85,7 @@ public class ServiceUtils
                 while((line = bufInput.readLine()) != null) {
                     result.add(line);
                 }
-            // }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
