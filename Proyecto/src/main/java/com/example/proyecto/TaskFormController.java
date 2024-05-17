@@ -101,7 +101,7 @@ public class TaskFormController implements Initializable {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(new Date());
 
-            Task newTask = new Task(category, description, formattedDate, Integer.parseInt(priority), employee);
+            Task newTask = new Task(category, description, formattedDate, Integer.parseInt(priority), 0, employee);
 
             postTask(newTask);
 

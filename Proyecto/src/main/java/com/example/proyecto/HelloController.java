@@ -13,9 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import model.Task;
-import model.TaskListResponse;
-import model.Trabajador;
+import model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +25,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
-
+    Gson gson = new Gson();
+    private ObservableList<Task> finishedTasks = FXCollections.observableArrayList();
     @FXML
     private ListView<Trabajador> listEmployees;
 
@@ -43,6 +42,11 @@ public class HelloController implements Initializable {
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenAccept(json -> {
                     tasks = parseTasks(json);
+                    if (tasks != null) {
+                        Platform.runLater(() -> {listTasks.setItems(tasks.filtered(task -> task.getTrabajador() == null));});
+                    } else {
+                        MessageUtils.showError("Error", "Failed to parse tasks");
+                    }
                 })
                 .exceptionally(ex -> {
                     MessageUtils.showError("Error", "Failed to fetch tasks");
@@ -119,6 +123,7 @@ public class HelloController implements Initializable {
                             jsonObject.getString("descripcion"),
                             jsonObject.getString("fechaInicio"),
                             jsonObject.getInt("prioridad"),
+                            jsonObject.getDouble("tiempo"),
                             trabajador
                     );
                 } else {
@@ -128,7 +133,8 @@ public class HelloController implements Initializable {
                             jsonObject.getString("descripcion"),
                             jsonObject.getString("fechaInicio"),
                             jsonObject.getInt("prioridad"),
-                            null
+                            jsonObject.getDouble("tiempo"),
+                    null
                     );
                 }
                 tasks.add(task);
@@ -237,5 +243,66 @@ public class HelloController implements Initializable {
         getTasks();
         updateTasks();
         getEmployees();
+    }
+
+    private void getEmployeeFinishedTasks(String password, int idTrabajador) {
+        String url = ServiceUtils.SERVER + "/api/trabajosFinished/"+idTrabajador+"/"+password;
+
+        ServiceUtils.getResponseAsync(url, null, "GET")
+                .thenAccept(json -> {
+                    finishedTasks = parseTasks(json);
+                })
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to fetch tasks");
+                    return null;
+                });
+    }
+
+    public void generatePayrolls(){
+        ObservableList<Trabajador> employees = listEmployees.getItems();
+        CreateTableInPdf pdf = new CreateTableInPdf();
+        EmailSender email = new EmailSender();
+        for(Trabajador employee : employees){
+            getEmployeeFinishedTasks(employee.getContraseña(),employee.getIdTrabajador());
+            pdf.generatePdfs(employee.getNombre(),finishedTasks);
+            //email.sender(employee.getNombre());
+        }
+    }
+
+    public void deleteTask(Task task) {
+        String url = ServiceUtils.SERVER + "/api/trabajos/"+task.getCodTrabajo();
+        String jsonRequest = "";
+
+        ServiceUtils.getResponseAsync(url, jsonRequest, "DELETE")
+                .thenApply(json -> gson.fromJson(json,TaskResponse.class))
+                .thenAccept(response -> {
+                    if(!response.isError()) {
+                        Platform.runLater(() -> {
+                            MessageUtils.showMessage("Deleted task",
+                                    response.getTask().getDescripcion() + " Deleted");
+                        });
+                    }
+                    else{
+                        Platform.runLater(()->{
+                            MessageUtils.showError("Error deleting task",
+                                    response.getErrorMessage());
+                        });
+                    }
+
+                })
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to put task");
+                    return null;
+                });
+    }
+    public void deleteTaskAction(ActionEvent actionEvent) {
+        deleteTask(listTasks.getSelectionModel().getSelectedItem());
+        listTasks.setItems(null);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getTasks();
     }
 }

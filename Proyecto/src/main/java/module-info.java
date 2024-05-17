@@ -3,6 +3,8 @@ module com.example.proyecto {
     requires javafx.fxml;
     requires org.json;
     requires com.google.gson;
+    requires itextpdf;
+    requires jakarta.mail;
 
 
     opens com.example.proyecto to javafx.fxml;

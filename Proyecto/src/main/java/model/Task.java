@@ -11,20 +11,22 @@ public class Task{
     private Trabajador trabajador;
 
 
-    public Task(String category, String description, String start, int priority, Trabajador trabajador) {
+    public Task(String category, String description, String start, int priority, double tiempo, Trabajador trabajador) {
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
         this.prioridad = priority;
+        this.tiempo = tiempo;
         this.trabajador = trabajador;
     }
 
-    public Task(int codTrabajo, String category, String description, String start, int priority, Trabajador trabajador) {
+    public Task(int codTrabajo, String category, String description, String start, int priority, double tiempo, Trabajador trabajador) {
         this.codTrabajo = codTrabajo;
         this.categoria = category;
         this.descripcion = description;
         this.fechaInicio = start;
         this.prioridad = priority;
+        this.tiempo = tiempo;
         this.trabajador = trabajador;
     }
 
