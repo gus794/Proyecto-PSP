@@ -11,29 +11,30 @@ import javafx.collections.ObservableList;
 import java.io.FileOutputStream;
 
 public class CreateTableInPdf {
-    public void generatePdfs(String nombre, ObservableList<Task> tasks){
-        String dest = nombre+".pdf";
+    public String generatePdfs(String nombre, ObservableList<Task> tasks,String dateSelected){
+        String dest = "payrolls/" + nombre + ".pdf";
         try {
             Document document = new Document(PageSize.A4);
-            PdfWriter.getInstance(document, new FileOutputStream("payrolls/"+dest));
+            PdfWriter.getInstance(document, new FileOutputStream(dest));
             document.open();
 
-            Paragraph titulo = new Paragraph(nombre);
+            Paragraph titulo = new Paragraph("Payroll of "+nombre+ " in "+dateSelected);
             titulo.setAlignment(Paragraph.ALIGN_CENTER);
             document.add(titulo);
             document.add(new Paragraph(" "));
 
-            PdfPTable table = new PdfPTable(4);
-
-            float[] columnWidths = {4, 2, 2, 2};
+            PdfPTable table = new PdfPTable(5);
+            float[] columnWidths = {2,3, 2, 2, 2};
             table.setWidths(columnWidths);
 
-            table.addCell(new PdfPCell(new com.itextpdf.text.Paragraph("Categoría")));
-            table.addCell(new PdfPCell(new com.itextpdf.text.Paragraph("Tiempo")));
-            table.addCell(new PdfPCell(new com.itextpdf.text.Paragraph("Dinero")));
-            table.addCell(new PdfPCell(new com.itextpdf.text.Paragraph("Total")));
+            table.addCell(new PdfPCell(new Paragraph("Fecha")));
+            table.addCell(new PdfPCell(new Paragraph("Categoría")));
+            table.addCell(new PdfPCell(new Paragraph("Tiempo")));
+            table.addCell(new PdfPCell(new Paragraph("Dinero")));
+            table.addCell(new PdfPCell(new Paragraph("Total")));
 
             for(Task task : tasks){
+                table.addCell(task.getFechaInicio());
                 table.addCell(task.getCategoria());
                 table.addCell(task.getTiempo()+"");
                 table.addCell("80€/h");
@@ -45,5 +46,6 @@ public class CreateTableInPdf {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return dest;
     }
 }

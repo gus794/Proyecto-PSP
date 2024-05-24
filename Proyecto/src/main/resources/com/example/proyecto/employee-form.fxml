@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="423.0" prefWidth="350.0" style="-fx-background-color: #4E4D4D;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto.EmployeeFormController">
    <children>
-      <Button layoutX="150.0" layoutY="363.0" mnemonicParsing="false" style="-fx-background-radius: 15px;" text="Create" onMouseClicked="#createEmployee"/>
+      <Button fx:id="btnConfirm" layoutX="150.0" layoutY="363.0" mnemonicParsing="false" onMouseClicked="#createEmployee" style="-fx-background-radius: 15px;" text="Create" />
       <Label layoutX="80.0" layoutY="22.0" text="Create employee" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />

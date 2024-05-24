@@ -10,8 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import model.*;
 import org.json.JSONArray;
@@ -22,28 +25,41 @@ import utils.ServiceUtils;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class HelloController implements Initializable {
-    Gson gson = new Gson();
+
+    @FXML
+    private DatePicker datePicker = new DatePicker();
+    private Gson gson = new Gson();
     private ObservableList<Task> finishedTasks = FXCollections.observableArrayList();
+    private ObservableList<Task> tasks = FXCollections.observableArrayList();
+    public ObservableList<Task> unassignedTasks = FXCollections.observableArrayList();
+    private List<Task> assignedTasks = new ArrayList<>();
+
     @FXML
     private ListView<Trabajador> listEmployees;
 
     @FXML
     private ListView<Task> listTasks;
 
-    private ObservableList<Task> tasks = FXCollections.observableArrayList();
-    private ObservableList<Task> unassignedTasks = FXCollections.observableArrayList();
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        updateTasks();
+        getEmployees();
+    }
 
-    private void getTasks() {
+    public void getTasks() {
         String url = ServiceUtils.SERVER + "/api/trabajos";
-
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenAccept(json -> {
                     tasks = parseTasks(json);
                     if (tasks != null) {
-                        Platform.runLater(() -> {listTasks.setItems(tasks.filtered(task -> task.getTrabajador() == null));});
+                        Platform.runLater(() -> listTasks.setItems(tasks.filtered(task -> task.getTrabajador() == null)));
                     } else {
                         MessageUtils.showError("Error", "Failed to parse tasks");
                     }
@@ -56,14 +72,13 @@ public class HelloController implements Initializable {
 
     public void updateTasks() {
         String url = ServiceUtils.SERVER + "/api/trabajos/unassigned";
-
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenAccept(json -> {
                     try {
                         unassignedTasks = parseTasks(json);
-                        listTasks.getItems().clear();
-                        listTasks.setItems(unassignedTasks);
-                    } catch(Exception e) {
+                        Platform.runLater(() -> listTasks.setItems(unassignedTasks));
+
+                    } catch (Exception e) {
                         MessageUtils.showError("Error", "Failed to parse tasks");
                     }
                 })
@@ -73,9 +88,8 @@ public class HelloController implements Initializable {
                 });
     }
 
-    private void getEmployees() {
+    public void getEmployees() {
         String url = ServiceUtils.SERVER + "/api/trabajadores";
-
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenAccept(json -> {
                     ObservableList<Trabajador> employees = parseEmployees(json);
@@ -118,7 +132,7 @@ public class HelloController implements Initializable {
                             trabajadorJson.getString("email")
                     );
                     task = new Task(
-                            jsonObject.getInt("codTrabajo"),
+                            jsonObject.getString("codTrabajo"),
                             jsonObject.getString("categoria"),
                             jsonObject.getString("descripcion"),
                             jsonObject.getString("fechaInicio"),
@@ -128,13 +142,13 @@ public class HelloController implements Initializable {
                     );
                 } else {
                     task = new Task(
-                            jsonObject.getInt("codTrabajo"),
+                            jsonObject.getString("codTrabajo"),
                             jsonObject.getString("categoria"),
                             jsonObject.getString("descripcion"),
                             jsonObject.getString("fechaInicio"),
                             jsonObject.getInt("prioridad"),
                             jsonObject.getDouble("tiempo"),
-                    null
+                            null
                     );
                 }
                 tasks.add(task);
@@ -172,28 +186,38 @@ public class HelloController implements Initializable {
 
     @FXML
     private void openTaskForm(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("task-form.fxml"));
-            Parent root = loader.load();
-            TaskFormController tfcontroller = loader.getController();
-            tfcontroller.setMainController(this);
-            tfcontroller.fillOptions();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        openForm("task-form.fxml", TaskFormController.class);
     }
 
     @FXML
     private void openEmployeeForm(MouseEvent event) {
+        openForm("employee-form.fxml", EmployeeFormController.class);
+    }
+    @FXML
+    private void openFinishedTasks(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("tareas-finalizadas.fxml"));
+        Parent root = loader.load();
+        FinishedTasksController controller = loader.getController();
+        controller.setMainController(this);
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    private <T> void openForm(String fxmlFile, Class<T> controllerClass) {
         try {
-            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("employee-form.fxml"));
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource(fxmlFile));
             Parent root = loader.load();
-            EmployeeFormController efcontroller = loader.getController();
-            efcontroller.setMainController(this);
-            efcontroller.fillOptions();
+            T controller = loader.getController();
+            if (controller instanceof TaskFormController) {
+                ((TaskFormController) controller).setMainController(this);
+                ((TaskFormController) controller).fillOptions();
+            } else if (controller instanceof EmployeeFormController) {
+                ((EmployeeFormController) controller).setMainController(this);
+                ((EmployeeFormController) controller).fillOptions();
+            } else {
+                ((FinishedTasksController) controller).setMainController(this);
+            }
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();
@@ -203,10 +227,11 @@ public class HelloController implements Initializable {
     }
 
     public ListView<Task> getListTasks() {
-        return this.listTasks;
+        return listTasks;
     }
+
     public ListView<Trabajador> getListEmployees() {
-        return this.listEmployees;
+        return listEmployees;
     }
 
     public void assignEmployee() {
@@ -215,86 +240,93 @@ public class HelloController implements Initializable {
 
         if (selectedTask != null && selectedEmployee != null) {
             selectedTask.setTrabajador(selectedEmployee);
-            listTasks.setItems(null);
-            tasks.remove(selectedTask);
-            listTasks.setItems(tasks);
+            unassignedTasks.remove(selectedTask);
+            listTasks.setItems(unassignedTasks);
+            assignedTasks.add(selectedTask);
+        } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Selección requerida");
+            alert.setHeaderText(null);
+            alert.setContentText("Debes seleccionar una tarea y un trabajador");
+            alert.showAndWait();
         }
     }
 
     @FXML
     public void putContactAction(MouseEvent actionEvent) {
+        openFormWithInfo("task-form.fxml", TaskFormController.class);
+    }
+
+    @FXML
+    public void putEmployeeAction(MouseEvent actionEvent) {
+        openFormWithInfo("employee-form.fxml", EmployeeFormController.class);
+    }
+
+    private <T> void openFormWithInfo(String fxmlFile, Class<T> controllerClass) {
         try {
-            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("task-form.fxml"));
-            Parent root = loader.load();
-            TaskFormController tfcontroller = loader.getController();
-            tfcontroller.setMainController(this);
-            tfcontroller.fillOptions();
-            tfcontroller.putInfo();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
+            if (Objects.equals(fxmlFile, "task-form.fxml") && this.listTasks.getSelectionModel().getSelectedItem() == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText(null);
+                alert.setContentText("Select a task to modify it");
+                alert.showAndWait();
+
+            } else if (Objects.equals(fxmlFile, "employee-form.fxml") && this.listEmployees.getSelectionModel().getSelectedItem() == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText(null);
+                alert.setContentText("Select a employee to modify it");
+                alert.showAndWait();
+
+            } else {
+                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource(fxmlFile));
+                Parent root = loader.load();
+                T controller = loader.getController();
+                if (controller instanceof TaskFormController) {
+                        ((TaskFormController) controller).setMainController(this);
+                        ((TaskFormController) controller).fillOptions();
+                        ((TaskFormController) controller).putInfo();
+                } else if (controller instanceof EmployeeFormController) {
+                        ((EmployeeFormController) controller).setMainController(this);
+                        ((EmployeeFormController) controller).fillOptions();
+                        ((EmployeeFormController) controller).putInfo();
+                }
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.show();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        getTasks();
-        updateTasks();
-        getEmployees();
-    }
-
     private void getEmployeeFinishedTasks(String password, int idTrabajador) {
-        String url = ServiceUtils.SERVER + "/api/trabajosFinished/"+idTrabajador+"/"+password;
-
+        String url = ServiceUtils.SERVER + "/api/trabajosFinished/" + idTrabajador + "/" + password;
         ServiceUtils.getResponseAsync(url, null, "GET")
-                .thenAccept(json -> {
-                    finishedTasks = parseTasks(json);
-                })
+                .thenAccept(json -> finishedTasks = parseTasks(json))
                 .exceptionally(ex -> {
                     MessageUtils.showError("Error", "Failed to fetch tasks");
                     return null;
                 });
     }
 
-    public void generatePayrolls(){
-        ObservableList<Trabajador> employees = listEmployees.getItems();
-        CreateTableInPdf pdf = new CreateTableInPdf();
-        EmailSender email = new EmailSender();
-        for(Trabajador employee : employees){
-            getEmployeeFinishedTasks(employee.getContraseña(),employee.getIdTrabajador());
-            pdf.generatePdfs(employee.getNombre(),finishedTasks);
-            //email.sender(employee.getNombre());
-        }
-    }
-
     public void deleteTask(Task task) {
-        String url = ServiceUtils.SERVER + "/api/trabajos/"+task.getCodTrabajo();
+        String url = ServiceUtils.SERVER + "/api/trabajos/" + task.getCodTrabajo();
         String jsonRequest = "";
-
         ServiceUtils.getResponseAsync(url, jsonRequest, "DELETE")
-                .thenApply(json -> gson.fromJson(json,TaskResponse.class))
+                .thenApply(json -> gson.fromJson(json, TaskResponse.class))
                 .thenAccept(response -> {
-                    if(!response.isError()) {
-                        Platform.runLater(() -> {
-                            MessageUtils.showMessage("Deleted task",
-                                    response.getTask().getDescripcion() + " Deleted");
-                        });
+                    if (!response.isError()) {
+                        Platform.runLater(() -> MessageUtils.showMessage("Deleted task", response.getTask().getDescripcion() + " Deleted"));
+                    } else {
+                        Platform.runLater(() -> MessageUtils.showError("Error deleting task", response.getErrorMessage()));
                     }
-                    else{
-                        Platform.runLater(()->{
-                            MessageUtils.showError("Error deleting task",
-                                    response.getErrorMessage());
-                        });
-                    }
-
                 })
                 .exceptionally(ex -> {
-                    MessageUtils.showError("Error", "Failed to put task");
+                    MessageUtils.showError("Error", "Failed to delete task");
                     return null;
                 });
     }
+
     public void deleteTaskAction(ActionEvent actionEvent) {
         deleteTask(listTasks.getSelectionModel().getSelectedItem());
         listTasks.setItems(null);
@@ -304,5 +336,115 @@ public class HelloController implements Initializable {
             e.printStackTrace();
         }
         getTasks();
+    }
+
+    public void deleteEmployee(Trabajador trabajador) {
+        String url = ServiceUtils.SERVER + "/api/trabajadores/" + trabajador.getIdTrabajador();
+        String jsonRequest = "";
+        ServiceUtils.getResponseAsync(url, jsonRequest, "DELETE")
+                .thenApply(json -> gson.fromJson(json, TaskResponse.class))
+                .thenAccept(response -> {
+                    if (!response.isError()) {
+                        Platform.runLater(() -> MessageUtils.showMessage("Deleted employee", response.getTask().getDescripcion() + " Deleted"));
+                    } else {
+                        Platform.runLater(() -> MessageUtils.showError("Error deleting employee", response.getErrorMessage()));
+                    }
+                })
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to delete employee");
+                    return null;
+                });
+    }
+
+    public void deleteEmployeeAction(ActionEvent actionEvent) {
+        deleteEmployee(listEmployees.getSelectionModel().getSelectedItem());
+        listEmployees.setItems(null);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getEmployees();
+    }
+
+    public void confirmAssignments(ActionEvent actionEvent) {
+        if (assignedTasks.isEmpty()) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setHeaderText(null);
+            alert.setContentText("There is no assignments to confirm");
+            alert.showAndWait();
+        } else {
+            for (Task t : assignedTasks) {
+                putTask(t);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            Platform.runLater(this::updateTasks);
+        }
+        List<Task> tasks = assignedTasks;
+        EmailSender emailSender = new EmailSender();
+
+        for (Task task : tasks) {
+            emailSender.sender(task.getTrabajador().getNombre(), "");
+        }
+    }
+
+    public void putTask(Task task) {
+        String url = ServiceUtils.SERVER + "/api/trabajos/" + task.getCodTrabajo();
+        String jsonRequest = gson.toJson(task);
+        ServiceUtils.getResponseAsync(url, jsonRequest, "PUT")
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to update task");
+                    return null;
+                });
+    }
+    public void generatePayrolls() {
+        ObservableList<Trabajador> employees = listEmployees.getItems();
+        CreateTableInPdf pdfGenerator = new CreateTableInPdf();
+        EmailSender emailSender = new EmailSender();
+        LocalDate localDate = datePicker.getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateSelected = localDate.format(formatter);
+
+        for (Trabajador employee : employees) {
+            getEmployeeFinishedTasks(employee.getContraseña(), employee.getIdTrabajador());
+            ObservableList<Task> dateTasks = FXCollections.observableArrayList();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(finishedTasks.size() >= 1){
+                for(int i=0; i<finishedTasks.size(); i++){
+                    if(dateComparison(finishedTasks.get(i).getFechaInicio(),dateSelected))
+                        dateTasks.add(finishedTasks.get(i));
+                }
+                String pdfFilePath = pdfGenerator.generatePdfs(employee.getNombre(), dateTasks,dateSelected);
+                emailSender.sender(employee.getNombre(), pdfFilePath);
+            }
+        }
+    }
+
+    public boolean dateComparison(String dateTask, String dateSelected){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        boolean flag = false;
+        try {
+            Date date1 = formatter.parse(dateTask);
+            Date date2 = formatter.parse(dateSelected);
+
+            if (date1.equals(date2)) {
+                flag = true;
+            } else if (date1.before(date2)) {
+                flag = false;
+            } else if (date1.after(date2)) {
+                flag = true;
+            }
+        } catch (ParseException e) {
+            System.out.println("Invalid date format");
+        }
+        return flag;
     }
 }

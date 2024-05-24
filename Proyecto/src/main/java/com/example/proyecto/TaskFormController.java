@@ -105,9 +105,6 @@ public class TaskFormController implements Initializable {
 
             postTask(newTask);
 
-            if (employee == null) {
-                this.mainController.getListTasks().getItems().add(newTask);
-            }
         } else {
             this.task.setCategoria(category);
             this.task.setPrioridad(Integer.parseInt(priority));
@@ -116,8 +113,16 @@ public class TaskFormController implements Initializable {
 
             putTask(this.task);
 
-            this.mainController.updateTasks();
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.mainController.updateTasks();
+
+
 
         Stage stage = (Stage) menuCategory.getScene().getWindow();
         stage.close();
@@ -152,9 +157,7 @@ public class TaskFormController implements Initializable {
     }
 
     public void putInfo(){
-        System.out.println("Putinfo");
         Task task = this.mainController.getListTasks().getSelectionModel().getSelectedItem();
-        System.out.println("Putinfo: "+task);
         if(task != null){
             txtDescription.setText(task.getDescripcion());
             txtPriority.setText(String.valueOf(task.getPrioridad()));

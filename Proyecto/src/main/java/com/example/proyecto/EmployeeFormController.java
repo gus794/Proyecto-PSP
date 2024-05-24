@@ -3,10 +3,7 @@ package com.example.proyecto;
 import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitMenuButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import model.Task;
@@ -31,6 +28,8 @@ public class EmployeeFormController implements Initializable {
             "Reparaciones menores"
     );
     @FXML
+    public Button btnConfirm;
+    @FXML
     private SplitMenuButton menuCategory;
     @FXML
     private TextField txtAge;
@@ -47,6 +46,7 @@ public class EmployeeFormController implements Initializable {
 
     private HelloController mainController;
     Gson gson = new Gson();
+    private Trabajador t;
 
     public void setMainController(HelloController mainController) {
         this.mainController = mainController;
@@ -83,16 +83,43 @@ public class EmployeeFormController implements Initializable {
             return;
         }
 
-        Trabajador newEmployee = new Trabajador(dni, name, apellidos, category, password, email);
+        if (Objects.equals(this.btnConfirm.getText(), "Create")) {
 
-        postEmployee(newEmployee);
+            Trabajador newEmployee = new Trabajador(dni, name, apellidos, category, password, email);
+            postEmployee(newEmployee);
+            this.mainController.getListEmployees().getItems().add(newEmployee);
+        } else {
+            this.t.setEspecialidad(category);
+            this.t.setNombre(name);
+            this.t.setApellidos(apellidos);
+            this.t.setDni(dni);
+            this.t.setEmail(email);
+            this.t.setContraseña(password);
+            System.out.println(this.t);
 
-        this.mainController.getListEmployees().getItems().add(newEmployee);
+            putEmployee(this.t);
+
+            this.mainController.getEmployees();
+        }
+
 
         Stage stage = (Stage) menuCategory.getScene().getWindow();
         stage.close();
     }
 
+    public void putEmployee(Trabajador t) {
+        String url = ServiceUtils.SERVER + "/api/trabajadores/"+t.getIdTrabajador();
+        String jsonRequest = gson.toJson(t);
+
+        ServiceUtils.getResponseAsync(url, jsonRequest, "PUT")
+                .thenAccept(json -> {
+                    this.mainController.updateTasks();
+                })
+                .exceptionally(ex -> {
+                    MessageUtils.showError("Error", "Failed to put task");
+                    return null;
+                });
+    }
 
     public void postEmployee(Trabajador employee) {
         String url = ServiceUtils.SERVER + "/api/trabajadores";
@@ -106,5 +133,17 @@ public class EmployeeFormController implements Initializable {
                     MessageUtils.showError("Error", "Error al enviar el trabajador.");
                     return null;
                 });
+    }
+
+    public void putInfo(){
+        Trabajador t = this.mainController.getListEmployees().getSelectionModel().getSelectedItem();
+        menuCategory.setText(t.getEspecialidad());
+        txtName.setText(t.getNombre());
+        txtApellidos.setText(t.getApellidos());
+        txtDni.setText(t.getDni());
+        txtEmail.setText(t.getEmail());
+        txtPass.setText(t.getContraseña());
+        btnConfirm.setText("Edit");
+        this.t = t;
     }
 }

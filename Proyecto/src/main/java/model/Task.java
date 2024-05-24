@@ -1,7 +1,7 @@
 package model;
 
 public class Task{
-    private int codTrabajo;
+    private String codTrabajo;
     private String categoria;
     private String descripcion;
     private String fechaInicio;
@@ -20,7 +20,7 @@ public class Task{
         this.trabajador = trabajador;
     }
 
-    public Task(int codTrabajo, String category, String description, String start, int priority, double tiempo, Trabajador trabajador) {
+    public Task(String codTrabajo, String category, String description, String start, int priority, double tiempo, Trabajador trabajador) {
         this.codTrabajo = codTrabajo;
         this.categoria = category;
         this.descripcion = description;
@@ -78,11 +78,11 @@ public class Task{
         this.prioridad = prioridad;
     }
 
-    public int getCodTrabajo() {
+    public String getCodTrabajo() {
         return codTrabajo;
     }
 
-    public void setCodTrabajo(int codTrabajo) {
+    public void setCodTrabajo(String codTrabajo) {
         this.codTrabajo = codTrabajo;
     }
 
