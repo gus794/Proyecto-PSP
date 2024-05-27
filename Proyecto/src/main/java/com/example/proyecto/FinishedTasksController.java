@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import model.Task;
@@ -30,7 +31,8 @@ public class FinishedTasksController implements Initializable {
             "Reparaciones menores"
     );
     Gson gson = new Gson();
-    private ListView<Task> lvFinishedTasks = new ListView<>();
+    @FXML
+    private ListView<Task> lvFinishedTasks;
 
     public void setMainController(HelloController mainController) {
     }
@@ -40,11 +42,12 @@ public class FinishedTasksController implements Initializable {
     }
 
     public void getTasks() {
-        String url = ServiceUtils.SERVER + "/api/trabajos";
+        String url = ServiceUtils.SERVER + "/api/trabajos/finished";
         ServiceUtils.getResponseAsync(url, null, "GET")
                 .thenAccept(json -> {
+                    ObservableList<Task> tasks = FXCollections.observableArrayList(parseTasks(json));
                     if (!parseTasks(json).isEmpty()) {
-                        Platform.runLater(() -> lvFinishedTasks.setItems(parseTasks(json)));
+                        Platform.runLater(() -> lvFinishedTasks.setItems(tasks));
                     } else {
                         MessageUtils.showError("Error", "Failed to parse tasks");
                     }

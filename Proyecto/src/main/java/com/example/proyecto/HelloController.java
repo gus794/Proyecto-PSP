@@ -335,7 +335,7 @@ public class HelloController implements Initializable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        getTasks();
+        updateTasks();
     }
 
     public void deleteEmployee(Trabajador trabajador) {

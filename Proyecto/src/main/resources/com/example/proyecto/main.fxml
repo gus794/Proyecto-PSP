@@ -7,34 +7,34 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="anchorPane" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="844.0" style="-fx-background-color: #4E4D4D;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto.HelloController">
-   <ListView fx:id="listEmployees" layoutX="532.0" layoutY="124.0" prefHeight="305.0" prefWidth="286.0" style="-fx-background-radius: 0px 0px 10px 10px;" />
-   <Button layoutX="362.0" layoutY="220.0" mnemonicParsing="false" onAction="#confirmAssignments" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Confirm assignments" />
-   <Button fx:id="btnCreateTask" layoutX="25.0" layoutY="446.0" mnemonicParsing="false" onMouseClicked="#openTaskForm" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #b2ffb8;" text="Create" />
-   <Button layoutX="362.0" layoutY="179.0" mnemonicParsing="false" onAction="#assignEmployee" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Assign employee" />
-   <ListView fx:id="listTasks" layoutX="25.0" layoutY="124.0" prefHeight="306.0" prefWidth="286.0" style="-fx-background-radius: 0px 0px 10px 10px;" />
-   <Button fx:id="btnFinishdeTasks" layoutX="364.0" layoutY="403.0" mnemonicParsing="false" onAction="#openFinishedTasks" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="View completed task" />
-   <Label layoutX="305.0" layoutY="14.0" text="Manager area" textFill="WHITE">
+<AnchorPane id="anchorPane" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="593.0" prefWidth="970.0" style="-fx-background-color: #4E4D4D;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto.HelloController">
+   <ListView fx:id="listEmployees" layoutX="595.0" layoutY="177.0" prefHeight="306.0" prefWidth="350.0" style="-fx-background-radius: 0px 0px 10px 10px;" />
+   <Button layoutX="427.0" layoutY="218.0" mnemonicParsing="false" onAction="#confirmAssignments" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Confirm assignments" />
+   <Button fx:id="btnCreateTask" layoutX="25.0" layoutY="499.0" mnemonicParsing="false" onMouseClicked="#openTaskForm" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #b2ffb8;" text="Create" />
+   <Button layoutX="427.0" layoutY="177.0" mnemonicParsing="false" onAction="#assignEmployee" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Assign employee" />
+   <ListView fx:id="listTasks" layoutX="25.0" layoutY="177.0" prefHeight="306.0" prefWidth="349.0" style="-fx-background-radius: 0px 0px 10px 10px;" />
+   <Button fx:id="btnFinishdeTasks" layoutX="427.0" layoutY="470.0" mnemonicParsing="false" onAction="#openFinishedTasks" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="View completed task" />
+   <Label layoutX="368.0" layoutY="67.0" text="Manager area" textFill="WHITE">
       <font>
          <Font name="System Bold" size="36.0" />
       </font>
    </Label>
-   <Button layoutX="239.0" layoutY="446.0" mnemonicParsing="false" onAction="#deleteTaskAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #ffbdbd;" text="Delete" />
-   <Button fx:id="btnEditTask" layoutX="132.0" layoutY="446.0" mnemonicParsing="false" onMouseClicked="#putContactAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #f9ff8c;" text="Modify" />
-   <Button fx:id="btnCreateEmployee" layoutX="539.0" layoutY="445.0" mnemonicParsing="false" onMouseClicked="#openEmployeeForm" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #b2ffb8;" text="Create" />
-   <Button layoutX="746.0" layoutY="446.0" mnemonicParsing="false" onAction="#deleteEmployeeAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #ffbdbd;" text="Delete" />
-   <Button fx:id="btnModifyEmployee" layoutX="639.0" layoutY="446.0" mnemonicParsing="false" onMouseClicked="#putEmployeeAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #f9ff8c;" text="Modify" />
-   <Label layoutX="532.0" layoutY="78.0" prefHeight="43.0" prefWidth="286.0" style="-fx-padding: 5Px 10px 5px 10px; -fx-background-color: white; -fx-background-radius: 10Px 10px 0px 0px; -fx-alignment: center;" text="Employees">
+   <Button layoutX="302.0" layoutY="499.0" mnemonicParsing="false" onAction="#deleteTaskAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #ffbdbd;" text="Delete" />
+   <Button fx:id="btnEditTask" layoutX="163.0" layoutY="499.0" mnemonicParsing="false" onMouseClicked="#putContactAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #f9ff8c;" text="Modify" />
+   <Button fx:id="btnCreateEmployee" layoutX="602.0" layoutY="498.0" mnemonicParsing="false" onMouseClicked="#openEmployeeForm" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #b2ffb8;" text="Create" />
+   <Button layoutX="873.0" layoutY="499.0" mnemonicParsing="false" onAction="#deleteEmployeeAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #ffbdbd;" text="Delete" />
+   <Button fx:id="btnModifyEmployee" layoutX="734.0" layoutY="499.0" mnemonicParsing="false" onMouseClicked="#putEmployeeAction" prefHeight="26.0" prefWidth="71.0" style="-fx-background-radius: 15px; -fx-background-color: #f9ff8c;" text="Modify" />
+   <Label layoutX="595.0" layoutY="131.0" prefHeight="43.0" prefWidth="350.0" style="-fx-padding: 5Px 10px 5px 10px; -fx-background-color: white; -fx-background-radius: 10Px 10px 0px 0px; -fx-alignment: center;" text="Employees">
       <font>
          <Font size="18.0" />
       </font>
    </Label>
-   <Label layoutX="25.0" layoutY="78.0" prefHeight="43.0" prefWidth="286.0" style="-fx-padding: 5Px 10px 5px 10px; -fx-background-color: white; -fx-background-radius: 10Px 10px 0px 0px; -fx-alignment: center;" text="Tasks">
+   <Label layoutX="24.0" layoutY="131.0" prefHeight="43.0" prefWidth="350.0" style="-fx-padding: 5Px 10px 5px 10px; -fx-background-color: white; -fx-background-radius: 10Px 10px 0px 0px; -fx-alignment: center;" text="Tasks">
       <font>
          <Font size="18.0" />
       </font>
    </Label>
-   <Button layoutX="362.0" layoutY="277.0" mnemonicParsing="false" onAction="#generatePayrolls" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Generate payrolls" />
-   <DatePicker fx:id="datePicker" layoutX="364.0" layoutY="328.0" prefHeight="26.0" prefWidth="130.0" />
-   <Label layoutX="413.0" layoutY="310.0" text="From" textFill="WHITE" />
+   <Button layoutX="426.0" layoutY="307.0" mnemonicParsing="false" onAction="#generatePayrolls" prefHeight="26.0" prefWidth="130.0" style="-fx-background-radius: 15px;" text="Generate payrolls" />
+   <DatePicker fx:id="datePicker" layoutX="428.0" layoutY="358.0" prefHeight="26.0" prefWidth="130.0" />
+   <Label layoutX="477.0" layoutY="340.0" text="From" textFill="WHITE" />
 </AnchorPane>

@@ -96,12 +96,6 @@ public class Task{
 
     @Override
     public String toString() {
-        return "Task{" +
-                ", category='" + categoria + '\'' +
-                ", cod='" + codTrabajo + '\'' +
-                ", description='" + descripcion + '\'' +
-                ", start=" + fechaInicio +
-                ", priority=" + prioridad +
-                ", employee=" + trabajador;
+        return "[" + prioridad + "] " + categoria + " - " + descripcion + " (Inicio: " + fechaInicio + ")";
     }
 }
